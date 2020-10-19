@@ -608,7 +608,7 @@ function unmuteTrack(track){
 
     muted[track] = false
     console.log(`unmuting track ${track}`)
-    tracks[track].volume = 1
+    tracks[track].volume = .75
 }
 
 let sound = new Mach1SoundPlayer();
