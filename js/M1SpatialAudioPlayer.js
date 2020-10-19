@@ -30,7 +30,7 @@ function handleDeviceOrientation(event) {
 
 window.addEventListener("deviceorientation", handleDeviceOrientation);
 
-// ------------------------ 
+// ------------------------
 controls = new(function() {
     this.nPoint = 468;
     this.yawMultiplier = 2;
@@ -126,12 +126,12 @@ async function renderPrediction() {
                     ctx.fillRect(x, y, 6, 6);
 
                     // let faceHeight = height-y
-                    
+
                     // if(i === 234){
                     //     console.log(faceHeight)
                     // }
 
-                    
+
                     // if(i === 234 && faceHeight > (height/6 * 4) ){
                     //     console.log("above 5/6ths")
                     //     unmuteTrack("soprano")
@@ -271,7 +271,7 @@ async function renderPrediction() {
         console.log('peer stopped, or no available predictions!');
         // return;
       }
-    
+
 
     let newData = WebRTCPeerClient.getData();
 
@@ -295,22 +295,22 @@ async function renderPrediction() {
                 } catch (err) {
                     document.getElementById("stats").innerHTML = err.message;
                 }
-    
+
                 const keypoints = prediction.scaledMesh;
                 // console.log(keypoints[0][2])
-    
+
                 for (let i = 0; i < keypoints.length; i++) {
                     const x = keypoints[i][0];
                     const y = keypoints[i][1];
-    
+
                     ctx.fillStyle = "white";
                     ctx.fillRect(x, y, 2, 2);
-    
+
                     if (parseInt(controls.nPoint) == i) {
                         ctx.fillStyle = "red";
                         ctx.fillRect(x, y, 6, 6);
                     }
-    
+
                     if (i == 10 || i == 152) {
                         ctx.fillStyle = "green";
                         ctx.fillRect(x, y, 6, 6);
@@ -318,71 +318,71 @@ async function renderPrediction() {
                     if (i == 234 || i == 454) {
                         ctx.fillStyle = "yellow";
                         ctx.fillRect(x, y, 6, 6);
-    
+
                         // let faceHeight = height-y
-                        
+
                         // if(i === 234){
                         //     console.log(faceHeight)
                         // }
-    
-                        
+
+
                         // if(i === 234 && faceHeight > (height/6 * 4) ){
                         //     console.log("above 5/6ths")
                         //     unmuteTrack("soprano")
                         // }
-    
+
                         // if(i === 234 && faceHeight < (height/6 * 4) ){
                         //     console.log("below 5/6ths")
                         //     muteTrack("soprano")
                         // }
-    
+
                         // if(i === 234 && faceHeight > (height/6 * 3) ){
                         //     console.log("above 4/6ths")
                         //     unmuteTrack("alto")
                         // }
-    
+
                         // if(i === 234 && faceHeight < (height/6 * 3) ){
                         //     console.log("below 5/6ths ")
                         //     muteTrack("alto")
                         // }
-    
+
                         // if(i === 234 && faceHeight > (height/6 * 2) ){
                         //     console.log("above 3/6ths")
                         //     unmuteTrack("tenor")
                         // }
-    
+
                         // if(i === 234 && faceHeight < (height/6 * 2) ){
                         //     console.log("below 3/6ths")
                         //     muteTrack("tenor")
                         // }
-    
+
                         // if(i === 234 && faceHeight > (height/6 * 1) ){
                         //     console.log("above 2/6ths")
                         //     unmuteTrack("bass")
                         // }
-    
+
                         // if(i === 234 && faceHeight < (height/6 * 1) ){
                         //     console.log("below 2/6ths")
                         //     muteTrack("bass")
                         // }
-    
-    
-    
+
+
+
                     }
                 }
-    
+
                 var pTop = new THREE.Vector3(prediction.mesh[10][0], prediction.mesh[10][1], prediction.mesh[10][2]);
                 var pBottom = new THREE.Vector3(prediction.mesh[152][0], prediction.mesh[152][1], prediction.mesh[152][2]);
                 var pLeft = new THREE.Vector3(prediction.mesh[234][0], prediction.mesh[234][1], prediction.mesh[234][2]);
                 var pRight = new THREE.Vector3(prediction.mesh[454][0], prediction.mesh[454][1], prediction.mesh[454][2]);
-    
+
                 var pTB = pTop.clone().addScaledVector(pBottom, -1).normalize();
                 var pLR = pLeft.clone().addScaledVector(pRight, -1).normalize();
-    
+
                 var yaw = radians_to_degrees(Math.PI / 2 - pLR.angleTo(new THREE.Vector3(0, 0, 1)));
                 var pitch = radians_to_degrees(Math.PI / 2 - pTB.angleTo(new THREE.Vector3(0, 0, 1)));
                 var roll = radians_to_degrees(Math.PI / 2 - pTB.angleTo(new THREE.Vector3(1, 0, 0)));
-    
+
                 if (yaw > parseFloat(controls.FOV)) {
                     yaw = parseFloat(controls.FOV);
                 }
@@ -404,49 +404,49 @@ async function renderPrediction() {
                 yawOptimized = yaw * parseFloat(controls.yawMultiplier);
                 pitchOptimized = pitch * parseFloat(controls.pitchMultiplier);
                 rollOptimized = roll * parseFloat(controls.rollMultiplier);
-    
+
                 console.log(pitchOptimized)
-    
+
                 if(pitchOptimized > 20 ){
                     console.log("above 20 degrees")
                     unmuteTrack("soprano")
                 }
-    
+
                 if(pitchOptimized < 20){
                     console.log("below 20 degrees")
                     muteTrack("soprano")
                 }
-    
+
                 if(pitchOptimized > 10){
                     console.log("above 10 degrees")
                     unmuteTrack("alto")
                 }
-    
+
                 if(pitchOptimized < 10  ){
                     console.log("below 10 degrees")
                     muteTrack("alto")
                 }
-    
+
                 if(pitchOptimized > -10 ){
                     console.log("above -10degrees")
                     unmuteTrack("tenor")
                 }
-    
+
                 if(pitchOptimized < -10 ){
                     console.log("below -10 degrees")
                     muteTrack("tenor")
                 }
-    
+
                 if(pitchOptimized > -20){
                     console.log("above -20 degrees")
                     unmuteTrack("bass")
                 }
-    
+
                 if(pitchOptimized < -20){
                     console.log("below -20 degrees")
                     unmuteTrack("bass")
                 }
-    
+
                 if (window.modeTracker == "facetracker") {
                     window.yaw = yawOptimized;
                     window.pitch = pitchOptimized;
@@ -463,7 +463,7 @@ async function renderPrediction() {
     // // Send my pose over peer if the peer is started
     if (WebRTCPeerClient.isPeerStarted()) {
         WebRTCPeerClient.sendData(predictions);
-    }    
+    }
 
     requestAnimationFrame(renderPrediction);
 }
@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // To connect to server remotely pass the ngrok address
     // See https://github.com/lisajamhoury/WebRTC-Simple-Peer-Examples#to-run-signal-server-online-with-ngrok
     // WebRTCPeerClient.initSocketClient('https://xxxxxxxxxxxxx.ngrok.io');
-    WebRTCPeerClient.initSocketClient('https://feb1882366c0.ngrok.io');
+    WebRTCPeerClient.initSocketClient('https://e3145fb7ea4d.ngrok.io');
 
     // Start the peer client
     WebRTCPeerClient.initPeerClient();
@@ -541,18 +541,18 @@ let tracks = {
 }
 
 let muted = {
-    soprano: false, 
+    soprano: false,
     alto: false,
     tenor: false,
     bass: false,
-} 
+}
 
 let playing = {
-    soprano: false, 
+    soprano: false,
     alto: false,
     tenor: false,
     bass: false,
-} 
+}
 
 function loadAudio() {
     soprano = document.getElementById('soprano')
@@ -591,7 +591,7 @@ function muteTrack(track){
 
     muted[track] = true
     console.log(`muting track ${track}`)
-    tracks[track].volume = 0  
+    tracks[track].volume = 0
 }
 
 function unmuteTrack(track){
@@ -600,7 +600,7 @@ function unmuteTrack(track){
         console.log(`track ${track} is not playing`)
         return
     }
-    
+
     if(!muted[track]){
         console.log(`track ${track} already unmuted`)
         return
